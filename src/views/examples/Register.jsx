@@ -1,4 +1,7 @@
-import React from "react";
+import React,{Component} from "react";
+
+import { connect } from 'react-redux';
+import registerAction from "../../actions/registerAction";
 
 // reactstrap components
 import {
@@ -16,7 +19,20 @@ import {
   Col
 } from "reactstrap";
 
-class Register extends React.Component {
+class Register extends Component {
+
+  state = {
+    name: "",
+    email: "",
+    password:""
+  }
+
+  onChange = (stateName, value) => {
+    this.setState({
+      [stateName]:value
+    })
+  }
+
   render() {
     return (
       <>
@@ -69,7 +85,11 @@ class Register extends React.Component {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Name" type="text" />
+                    <Input
+                      placeholder="Name"
+                      type="text"
+                      onChange ={e=>this.onChange("name",e.target.value)}
+                    />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -79,7 +99,11 @@ class Register extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" />
+                    <Input
+                      placeholder="Email"
+                      type="email"
+                      onChange ={e=>this.onChange("email",e.target.value)}
+                    />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -89,7 +113,12 @@ class Register extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" />
+                    <Input
+                      placeholder="Password"
+                      type="password"
+                      onChange={e=>this.onChange("password",e.target.value)}
+
+                    />
                   </InputGroup>
                 </FormGroup>
                 <div className="text-muted font-italic">
@@ -121,7 +150,16 @@ class Register extends React.Component {
                   </Col>
                 </Row>
                 <div className="text-center">
-                  <Button className="mt-4" color="primary" type="button">
+                  <Button
+                    className="mt-4"
+                    color="primary"
+                    type="button"
+                    onClick={() => this.props.registerAction(
+                      this.state.name,
+                      this.state.email,
+                      this.state.password
+                    )}
+                  >
                     Create account
                   </Button>
                 </div>
@@ -134,4 +172,17 @@ class Register extends React.Component {
   }
 }
 
-export default Register;
+const mapStateToProps = state => ({ ...state });
+
+const mapDispatchToProps = dispatch => ({
+  registerAction: (email, name, password) => dispatch(registerAction(
+    name,
+    email,
+    password
+  ))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Register)
